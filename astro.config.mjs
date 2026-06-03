@@ -12,7 +12,10 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
 	site: process.env.SITE_URL || `https://${process.env.VERCEL_URL}`,
 	output: 'static',
-	adapter: cloudflare(),
+	adapter: cloudflare({
+		prerenderEnvironment: 'node',
+		imageService: { build: 'compile', runtime: 'passthrough' },
+	}),
 	redirects: { '/home': '/' },
 	integrations: [mdx(), sitemap(), icon(), tina()],
 	build: {
