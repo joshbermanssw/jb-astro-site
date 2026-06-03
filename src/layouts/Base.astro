@@ -2,9 +2,8 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import TinaIsland from '@tinacms/astro/TinaIsland.astro';
 import { getConfig } from '../lib/data';
-import { islands } from '../lib/islands';
+import { tinaFormPayload } from '../lib/tina-forms';
 
 interface Props {
 	title: string;
@@ -13,7 +12,8 @@ interface Props {
 }
 
 const { title, description, image } = Astro.props;
-const config = (await getConfig()).data?.config ?? null;
+const configResult = await getConfig();
+const config = configResult.data?.config ?? null;
 ---
 
 <!doctype html>
@@ -22,12 +22,17 @@ const config = (await getConfig()).data?.config ?? null;
 		<BaseHead title={title} description={description} image={image} />
 	</head>
 	<body>
-		<TinaIsland name="global" wrapper={islands.global.wrapper}>
-			<Header config={config} />
-		</TinaIsland>
+		<Fragment set:html={tinaFormPayload(configResult)} />
+		<script is:inline type="module">
+			if (window.self !== window.top && !window.__tinaBootstrap) {
+				window.__tinaBootstrap = 1;
+				const { init, refreshForms } = await import('/admin/bridge.js');
+				init();
+				document.addEventListener('astro:page-load', refreshForms);
+			}
+		</script>
+		<Header config={config} />
 		<slot />
-		<TinaIsland name="global-footer" wrapper={islands['global-footer'].wrapper}>
-			<Footer config={config} />
-		</TinaIsland>
+		<Footer config={config} />
 	</body>
 </html>
