@@ -1,8 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import TinaIsland from '@tinacms/astro/TinaIsland.astro';
 import PageBody from '../components/islands/PageBody.astro';
 import { getConfig, getPage, listPages } from '../lib/data';
-import { tinaFormPayload } from '../lib/tina-forms';
+import { islands } from '../lib/islands';
 
 export async function getStaticPaths() {
 	const pages = await listPages();
@@ -23,8 +24,7 @@ const config = (await getConfig()).data?.config ?? null;
 	title={data.seoTitle || config?.seo?.title || 'TinaCMS + Astro'}
 	description={config?.seo?.description ?? 'Welcome to my website!'}
 >
-	<Fragment set:html={tinaFormPayload(page, true)} />
-	<main>
+	<TinaIsland name="page" wrapper={islands.page.wrapper} params={{ slug }} primary>
 		<PageBody data={data} />
-	</main>
+	</TinaIsland>
 </Base>
