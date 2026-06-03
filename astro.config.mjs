@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, sessionDrivers } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import icon from 'astro-icon';
@@ -17,6 +17,9 @@ export default defineConfig({
 		imageService: { build: 'compile', runtime: 'passthrough' },
 	}),
 	redirects: { '/home': '/' },
+	session: {
+		driver: sessionDrivers.lruCache(),
+	},
 	integrations: [mdx(), sitemap(), icon(), tina()],
 	build: {
 		// Inline the (~10 KiB) bundled CSS into a <style> in <head> instead of a
