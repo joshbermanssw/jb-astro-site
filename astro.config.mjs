@@ -12,7 +12,6 @@ import vercel from '@astrojs/vercel';
 export default defineConfig({
 	site: process.env.SITE_URL || `https://${process.env.VERCEL_URL}`,
 	output: 'static',
-	adapter: vercel(),
 	redirects: { '/home': '/' },
 	integrations: [mdx(), sitemap(), icon(), tina()],
 	build: {
